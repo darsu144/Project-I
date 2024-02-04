@@ -14,8 +14,8 @@ const static_path = path.join(__dirname, "./public/Frontend");
 app.use(express.static(static_path));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors({ origin: 'http://127.0.0.1:5500',
-origin:'http://localhost:5000' }));
+app.use(cors());
+
 
 
 // const corsOptions = {
@@ -51,7 +51,7 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "./public/Frontend/index.html"));
 });
 
-app.post('/upload', upload, async (req, res) => {
+app.post('/upload',cors(), upload, async (req, res) => {
     try {
         const { title, description } = req.body;
 
@@ -71,7 +71,7 @@ app.post('/upload', upload, async (req, res) => {
 });
 
 
-app.get('/upload/all', async (req, res) => {
+app.get('/upload/all', cors(),async (req, res) => {
     try {
         const Wastes = await Waste.find();
         res.json(Wastes);
@@ -82,7 +82,7 @@ app.get('/upload/all', async (req, res) => {
 });
 
 
-app.post('/register', async (req, res) => {
+app.post('/register', cors(),async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
@@ -105,7 +105,7 @@ app.post('/register', async (req, res) => {
 });
 
 
-app.post('/login', async (req, res) => {
+app.post('/login', cors(),async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -120,8 +120,8 @@ app.post('/login', async (req, res) => {
         if (!passwordMatch) {
             return res.status(401).send('Invalid email or password');
         }
-        res.redirect('http://127.0.0.1:5500/src/public/Frontend/index.html')
-        res.status(201).send('User login successfully!');
+        res.redirect('/')
+        
         
     } catch (error) {
         console.error('Error during login:', error);

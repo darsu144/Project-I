@@ -70,7 +70,7 @@
                 const wastagesCard = document.createElement('div');
                 wastagesCard.classList.add('wastages-card');
                 wastagesCard.innerHTML = `
-                    <img src="${getPhotoURL(wastage.photo)}" alt="Wastages Photo" class="watch-image">
+                    <img src="data:image/jpeg;base64,${wastage.photo}" alt="Wastages Photo" class="watch-image">
                     <h3>${wastage.title}</h3>
                     <p>${wastage.description}</p>
                     <p>Created at: ${new Date(wastage.createdAt).toLocaleString()}</p>
@@ -79,15 +79,6 @@
                 wastagesContainer.appendChild(wastagesCard);
             });
         }
-
-        function getPhotoURL(photo) {
-            // Provide a default image URL if photo is not available
-            const defaultPhotoURL = 'path/to/default_photo.jpg';
-            
-            // Check if photo is available
-            return photo ? `data:image/jpeg;base64,${photo}` : defaultPhotoURL;
-        }
-        //k xa
 
         function redirectToCart() {
             window.location.href = '../Cart/cart.html';
