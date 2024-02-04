@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E_WASTAGE | Login Page</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+    <div class="form-container sign-in">
+        <form action="http://localhost:5000/login" method="post">
+            <h2>Login-form</h2>
+            <div class="input-field">
+                <input type="text" required />
+                <label>Enter email Password</label>
+            </div>
+            <div class="input-field">
+                <input type="password" required />
+                <label>Enter Enter Password</label>
+            </div>
+            <div class="Forget">
+                <label for="save-login">
+                    <input type="checkbox" id="save-login" />
+                    <p>save login information</p>
+                </label>
+                <a href="#">Forget password</a>
+            </div>
+            <button type="submit">log in</button>
+        </form>
+        <div class="Create account">
+            <p>don't have an account?<a href="#"> create account</a></p>
+        </div>
+    </div>
+</body>
+
+</html>
