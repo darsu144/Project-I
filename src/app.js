@@ -82,9 +82,16 @@ app.get('/upload/all', cors(),async (req, res) => {
 });
 
 
-app.post('/register', cors(),async (req, res) => {
+
+app.post('/register', cors(), async (req, res) => {
     try {
         const { name, email, password } = req.body;
+
+        // Check if user already exists with the provided email
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).send('Email is already in use');
+        }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -103,6 +110,7 @@ app.post('/register', cors(),async (req, res) => {
         res.status(500).send(`Internal Server Error: ${error.message}`);
     }
 });
+
 
 
 app.post('/login', cors(),async (req, res) => {
