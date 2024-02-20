@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Posts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .post {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        .post h3 {
+            margin-top: 0;
+        }
+        .post p {
+            margin-bottom: 10px;
+        }
+        .post img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .btn {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .btn-delete {
+            background-color: #dc3545;
+        }
+        .btn-update {
+            background-color: #28a745;
+            margin-right: 5px;
+        }
+        .form-container {
+            display: none;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        .form-container input[type="text"],
+        .form-container textarea {
+            width: calc(100% - 22px);
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+        .form-container button {
+            width: 100%;
+            padding: 5px 0;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Posts</h1>
+        <div id="userPosts"></div>
+    </div>
+
+    <script>
+        // Fetch user posts from the backend
+      
+async function fetchUserPosts() {
+    const email = localStorage.getItem('email');
+    if (!email) {
+        console.error('Email not found in localStorage');
+        return [];
+    }
+    try {
+        const response = await fetch(`http://localhost:5000/upload/all`);
+        const posts = await response.json();
+        // Filter posts to only include those belonging to the logged-in user
+        const userPosts = posts.filter(post => post.email === email);
+        return userPosts;
+    } catch (error) {
+        console.error('Error fetching user posts:', error);
+        return [];
+    }
+}
+
+
+        // Display user posts
+        async function displayUserPosts() {
+            const userPostsContainer = document.getElementById('userPosts');
+            const posts = await fetchUserPosts();
+            if (posts.length === 0) {
+                userPostsContainer.innerHTML = '<p>No posts found.</p>';
+                return;
+            }
+            userPostsContainer.innerHTML = ''; // Clear previous content
+            posts.forEach(post => {
+                const postDiv = document.createElement('div');
+                postDiv.classList.add('post');
+                postDiv.innerHTML = `
+                    <h3>${post.title}</h3>
+                    <img src="data:image/jpeg;base64,${post.photo}" alt="Post Photo">
+                    <p>${post.description}</p>
+                    <button class="btn btn-update" onclick="showEditForm('${post._id}', '${post.title}', '${post.description}', '${post.photo}')">Edit</button>
+                    <button class="btn btn-delete" onclick="deletePost('${post._id}')">Delete</button>
+                `;
+                userPostsContainer.appendChild(postDiv);
+            });
+        }
+
+        // Show the edit form with pre-filled data
+function showEditForm(postId, title, description, photo) {
+    const formContainer = document.getElementById('editFormContainer');
+    const editForm = document.getElementById('editForm');
+    editForm.elements['postId'].value = postId;
+    editForm.elements['title'].value = title;
+    editForm.elements['description'].value = description;
+
+    // Display the current photo
+    const photoPreview = document.getElementById('photoPreview');
+    photoPreview.src = `data:image/jpeg;base64,${photo}`;
+
+    formContainer.style.display = 'block';
+}
+
+        // Hide the edit form
+        function hideEditForm() {
+            const formContainer = document.getElementById('editFormContainer');
+            formContainer.style.display = 'none';
+        }
+
+       // Update a post
+async function updatePost() {
+    const editForm = document.getElementById('editForm');
+    const postId = editForm.elements['postId'].value;
+    const title = editForm.elements['title'].value;
+    const description = editForm.elements['description'].value;
+
+    // Get the selected file
+    const photoInput = document.getElementById('photo');
+    const photoFile = photoInput.files[0];
+
+    // Create FormData to handle file upload
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('photo', photoFile);
+
+    try {
+        const response = await fetch(`http://localhost:5000/upload/${postId}`, {
+            method: 'PUT',
+            body: formData,
+        });
+        if (response.ok) {
+            hideEditForm();
+            displayUserPosts();
+        } else {
+            const errorMessage = await response.text();
+            console.error('Error updating post:', errorMessage);
+        }
+    } catch (error) {
+        console.error('Error updating post:', error);
+    }
+}
+
+
+        // Delete a post
+        async function deletePost(postId) {
+            try {
+                const response = await fetch(`http://localhost:5000/upload/${postId}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    displayUserPosts();
+                } else {
+                    const errorMessage = await response.text();
+                    console.error('Error deleting post:', errorMessage);
+                }
+            } catch (error) {
+                console.error('Error deleting post:', error);
+            }
+        }
+
+        // Initial function call to display user posts
+        displayUserPosts();
+    </script>
+
+    <!-- Edit Post Form -->
+<div id="editFormContainer" class="form-container">
+    <h2>Edit Post</h2>
+    <form id="editForm" onsubmit="event.preventDefault(); updatePost()">
+        <input type="hidden" name="postId">
+        <input type="text" name="title" placeholder="Enter Post Title" required>
+        <textarea name="description" placeholder="Enter Post Description" required></textarea>
+        
+        <!-- Display current photo -->
+        <img id="photoPreview" src="" alt="Current Post Photo" style="max-width: 100%; margin-bottom: 10px;">
+        
+        <!-- Allow user to upload new photo -->
+        <input type="file" id="photo" name="photo" accept="image/*" required>
+        
+        <button type="submit">Update Post</button>
+        <button type="button" onclick="hideEditForm()">Cancel</button>
+    </form>
+</div>
+
+
+</body>
+</html>

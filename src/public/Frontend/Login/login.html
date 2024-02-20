@@ -10,7 +10,7 @@
 
 <body>
     <div class="form-container sign-in">
-        <form action="http://localhost:5000/login" method="post">
+        <form id="loginForm" action="http://localhost:5000/login" method="post">
             <h2>Login-form</h2>
             <div class="input-field">
                 <input type="text" name="email" required />
@@ -33,6 +33,40 @@
             <p>don't have an account?<a href="#"> create account</a></p>
         </div>
     </div>
+
+    <script>
+        // Access the login form
+        const loginForm = document.getElementById('loginForm');
+        
+        // Add event listener for form submission
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission
+            
+            const formData = new FormData(loginForm); // Get form data
+            const email = formData.get('email'); // Get email from form data
+            
+            // Make POST request to login endpoint
+            const response = await fetch('http://localhost:5000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email }) // Send only email in the request body
+            });
+
+            if (response.ok) {
+                // If login is successful, save the email in localStorage
+                localStorage.setItem('email', email);
+                // Redirect or perform other actions as needed
+                window.location.href = '/'; // Redirect to homepage
+            } else {
+                // Handle login failure
+                const errorMessage = await response.text();
+                console.error('Login failed:', errorMessage);
+                // Display error message to the user or perform other actions as needed
+            }
+        });
+    </script>
 </body>
 
 </html>

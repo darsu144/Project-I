@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
             flex-wrap: wrap;
             justify-content: center;
         }
+
         .wastages-card {
             background-color: #fff;
             border: 1px solid #ddd;
@@ -24,12 +26,14 @@
             padding: 16px;
             width: 300px;
         }
+
         #watchContainer {
             align-items: center;
             position: relative;
             margin-top: 4%;
             padding: 10px;
         }
+
         .buy-button {
             background-color: #4caf50;
             color: white;
@@ -39,6 +43,7 @@
             cursor: pointer;
             margin-top: 10px;
         }
+
         .watch-image {
             max-width: 100%;
             height: auto;
@@ -46,6 +51,7 @@
         }
     </style>
 </head>
+
 <body>
     <h1>Welcome to the E_WASTAGE </h1>
     <div id="watchContainer"></div>
@@ -84,7 +90,16 @@
             window.location.href = '../Cart/cart.html';
         }
 
-        renderWastages();
+        // Check if email is in localStorage
+        const email = localStorage.getItem('email');
+        if (!email) {
+            // Redirect to home page if email is not found
+            window.location.href = '../Login/login.html';
+        } else {
+            // Render wastages if email is found
+            renderWastages();
+        }
     </script>
 </body>
+
 </html>

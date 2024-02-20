@@ -3,29 +3,23 @@
 <head>
     <title>Webpage Design</title>
     <link rel="stylesheet" href="./index.css">
-    <!-- <link rel="stylesheet" href="signup.html">
-    <link rel="stylesheet" href="login.html"> -->
-np
-
 </head>
 <body>
-
-    
     <div class="main">
         <div class="navbar">
             <div class="icon">
                 <h2 class="logo">EWASTAGE</h2>
             </div>
 
-            <div class="menu">
+            <div class="menu" id="menu">
                 <ul>
                     <li><a href="/">HOME</a></li>
                     <li><a href="./Admin/admin.html">Upload</a></li>
                     <li><a href="./Product/product.html">Product</a></li>
-                    <!-- <li><a href="#">PROFILE</a></li> -->
-                    <li><a href="./Register/register.html">SIGNUP</a></li> 
-                    <li><a href="./Login/login.html">LOGIN</a></li>
-                    <!-- <li><a href="#">CONTACT</a></li> -->
+                    <li id="profile" style="display: none;"><a href="#">PROFILE</a></li>
+                    <li id="signout" style="display: none;"><a href="#">SIGNOUT</a></li>
+                    <li id="signup"><a href="./Register/register.html">SIGNUP</a></li> 
+                    <li id="login"><a href="./Login/login.html">LOGIN</a></li>
                 </ul>
             </div>
 
@@ -39,36 +33,54 @@ np
             <h1>E-WASTAGE <br><span>MANAGEMENT</span> <br>SYSTEM</h1>
             <p class="par">This system is designed to manage electronic waste products such as: <br> laptops, mobiles,desktops and other electronic appliances .
                 <br> 
-
                 <button class="cn"><a href="#">JOIN US</a></button>
-
-
-
-                    </div>
-                </div>
+            </p>
         </div>
     </div>
-   
 
-    <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+    <script>
+        // Check if email exists in localStorage
+        const email = localStorage.getItem('email');
 
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-        import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-database.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-auth.js";
+        // Get the menu element
+        const menu = document.getElementById('menu');
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBHej_ut8itswaQZzcqdxQuwH7HcvX8_hY",
-            authDomain: "e-waste-management-2d92e.firebaseapp.com",
-            databaseURL: "https://e-waste-management-2d92e-default-rtdb.firebaseio.com",
-            projectId: "e-waste-management-2d92e",
-            storageBucket: "e-waste-management-2d92e.appspot.com",
-            messagingSenderId: "1078912924859",
-            appId: "1:1078912924859:web:865a62477bd7b39af13d9e",
-            measurementId: "G-JZ0BZN403B"
-        };
-</Script>
+        // Get the signup and login elements
+        const signup = document.getElementById('signup');
+        const login = document.getElementById('login');
+        const profile = document.getElementById('profile');
+        const signout = document.getElementById('signout');
+
+        // If email exists, show profile and signout options, else show signup and login options
+        if (email) {
+            // Show profile and signout options
+            profile.style.display = 'inline-block';
+            signout.style.display = 'inline-block';
+
+            // Hide signup and login options
+            signup.style.display = 'none';
+            login.style.display = 'none';
+            
+            // Add signout functionality
+            signout.addEventListener('click', () => {
+                // Remove email from localStorage
+                localStorage.removeItem('email');
+                // Redirect to homepage or perform any other necessary action
+                window.location.href = '/';
+            });
+
+            // Add profile functionality
+            profile.addEventListener('click', () => {
+                // Redirect to profile page
+                window.location.href = './User/user.html';
+            });
+        } else {
+            // If email doesn't exist, hide profile and signout options, and show signup and login options
+            profile.style.display = 'none';
+            signout.style.display = 'none';
+            signup.style.display = 'inline-block';
+            login.style.display = 'inline-block';
+        }
+    </script>
 </body>
 </html>

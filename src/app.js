@@ -1,9 +1,9 @@
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
-const bcrypt = require("bcrypt");
-const multer = require("multer"); // Import the multer module
+const multer = require("multer");
 const app = express();
+
 require("./db/conn");
 const User = require("./models/register");
 const Waste = require("./models/waste");
@@ -16,25 +16,22 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
-
-
-// const corsOptions = {
-//     origin: 'http://localhost:5500', // Update with your actual frontend URL
-//     optionsSuccessStatus: 200,
-// };
-
-// app.use(cors(corsOptions));
+// Middleware to set the Content-Type header for CSS files
+app.use((req, res, next) => {
+    if (req.url.endsWith('.css')) {
+        res.header('Content-Type', 'text/css');
+    }
+    next();
+});
 
 // Set up Multer for handling file uploads
-const storage = multer.memoryStorage(); // You can change this to diskStorage if you want to store files on disk
-
+const storage = multer.memoryStorage();
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 5 * 1024 * 1024, // Limit the file size to 5MB (adjust as needed)
+        fileSize: 5 * 1024 * 1024,
     },
     fileFilter: (req, file, cb) => {
-        // Add file type validation if needed
         const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
         if (allowedMimeTypes.includes(file.mimetype)) {
             cb(null, true);
@@ -42,22 +39,20 @@ const upload = multer({
             cb(new Error('Invalid file type. Only JPEG, PNG, and GIF are allowed.'));
         }
     },
-}).single('photo'); // 'photo' should match the field name in your form
-
-// Enable CORS for all routes with minimal configuration
-app.use(cors());
+}).single('photo');
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "./public/Frontend/index.html"));
 });
 
-app.post('/upload',cors(), upload, async (req, res) => {
+app.post('/upload', cors(), upload, async (req, res) => {
     try {
-        const { title, description } = req.body;
+        const { title, description,email} = req.body;
 
         const newWaste = new Waste({
             title,
             description,
+            email,
             photo: req.file ? req.file.buffer.toString('base64') : null,
         });
 
@@ -70,8 +65,7 @@ app.post('/upload',cors(), upload, async (req, res) => {
     }
 });
 
-
-app.get('/upload/all', cors(),async (req, res) => {
+app.get('/upload/all', cors(), async (req, res) => {
     try {
         const Wastes = await Waste.find();
         res.json(Wastes);
@@ -81,26 +75,48 @@ app.get('/upload/all', cors(),async (req, res) => {
     }
 });
 
+app.delete('/upload/:id', cors(), async (req, res) => {
+    try {
+        const id = req.params.id;
+        await Waste.findByIdAndDelete(id);
+        res.status(200).send('Waste deleted successfully');
+    } catch (error) {
+        console.error('Error deleting waste:', error);
+        res.status(500).send(`Internal Server Error: ${error.message}`);
+    }
+});
+
+app.put('/upload/:id', cors(), upload, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const { title, description } = req.body;
+        let photo = req.body.photo; // Assuming the photo is sent as a base64 string
+        if (req.file) {
+            // If a new photo file is uploaded, set the photo variable to the file buffer
+            photo = req.file.buffer.toString('base64');
+        }
+        const updatedWaste = await Waste.findByIdAndUpdate(id, { title, description, photo }, { new: true });
+        res.json(updatedWaste);
+    } catch (error) {
+        console.error('Error updating waste:', error);
+        res.status(500).send(`Internal Server Error: ${error.message}`);
+    }
+});
 
 
 app.post('/register', cors(), async (req, res) => {
     try {
         const { name, email, password } = req.body;
-
-        // Check if user already exists with the provided email
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).send('Email is already in use');
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-
         const newUser = new User({
             name,
             email,
-            password: hashedPassword,
+            password,
         });
-        console.log("Hi I'm here");
 
         await newUser.save();
 
@@ -111,38 +127,29 @@ app.post('/register', cors(), async (req, res) => {
     }
 });
 
-
-
-app.post('/login', cors(),async (req, res) => {
+app.post('/login', cors(), async (req, res) => {
     try {
         const { email, password } = req.body;
-
         const user = await User.findOne({ email });
-
         if (!user) {
-            return res.status(401).send('User is not found');
-        }
-
-        const passwordMatch = await bcrypt.compare(password, user.password);
-
-        if (!passwordMatch) {
             return res.status(401).send('Invalid email or password');
         }
-        res.redirect('/')
-        
-        
+
+        // if (password !== user.password) {
+        //     return res.status(401).send('Invalid email or password');
+        // }
+
+        res.redirect('/');
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).send(`Internal Server Error: ${error.message}`);
     }
 });
 
-
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send(`Internal Server Error: ${err.message}`);
 });
-
 
 app.listen(port, () => {
     console.log(`Server is running at port no ${port}`);

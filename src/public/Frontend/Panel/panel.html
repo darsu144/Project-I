@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+    <header>
+        <h1>Admin Panel</h1>
+    </header>
+    <div id="wasteContainer" class="container"></div>
+
+    <script>
+        // Fetch all waste items
+        async function fetchWastes() {
+            try {
+                const response = await fetch('http://localhost:5000/upload/all');
+                const wastes = await response.json();
+                return wastes;
+            } catch (error) {
+                console.error('Error fetching waste data:', error);
+                return [];
+            }
+        }
+
+        // Render waste items in the admin panel
+        async function renderWastes() {
+            const wastes = await fetchWastes();
+            const wasteContainer = document.getElementById('wasteContainer');
+
+            wastes.forEach(waste => {
+                const wasteCard = document.createElement('div');
+                wasteCard.classList.add('waste-card');
+                wasteCard.innerHTML = `
+                    <img src="data:image/jpeg;base64,${waste.photo}" alt="Waste Photo">
+                    <h3>${waste.title}</h3>
+                    <p>${waste.description}</p>
+                    <p>Created at: ${new Date(waste.createdAt).toLocaleString()}</p>
+                    <button onclick="deleteWaste('${waste._id}')">Delete</button>
+                `;
+                wasteContainer.appendChild(wasteCard);
+            });
+        }
+
+        // Delete waste item
+        async function deleteWaste(id) {
+            try {
+                const response = await fetch(`http://localhost:5000/upload/${id}`, {
+                    method: 'DELETE'
+                });
+                if (response.ok) {
+                    // Remove the deleted waste item from the UI
+                    const wasteCard = document.getElementById(id);
+                    wasteCard.parentNode.removeChild(wasteCard);
+                    console.log('Waste deleted successfully');
+                } else {
+                    console.error('Failed to delete waste');
+                }
+            } catch (error) {
+                console.error('Error deleting waste:', error);
+            }
+        }
+
+        // Render waste items when the page loads
+        renderWastes();
+    </script>
+</body>
+</html>
