@@ -1,40 +1,25 @@
 body {
     font-family: 'Montserrat', sans-serif;
-    margin: 0;
-    padding: 0;
+    margin-top: -100px;
+    padding: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     background: #f4f4f4;
-}
-
-.container {
-    position: relative;
-    width: 100%;
-    max-width: 900px;
-    height: 400px;
-    overflow: hidden;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    
 }
 
 .form-container {
-    position: absolute;
-    top: 0;
-    width: 50%;
-    height: 100%;
-    transition: transform 0.6s ease-in-out;
-}
+    position: relative;
+    width: 40%;
+    height: 400px;
 
-.sign-in {
-    left: 0;
+    overflow: hidden;
+    background: #1c1919;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
 }
-
-.sign-up {
-    left: 50%;
-}
-
 form {
     display: flex;
     flex-direction: column;
@@ -46,26 +31,28 @@ form {
 h1 {
     font-size: 2em;
     margin-bottom: 20px;
-    color: #333;
+    color: #312525;
 }
 
 input {
     width: 80%;
     padding: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 1px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    outline: none;
+    margin-left: 1px;
 }
 
 button {
-    width: 80%;
+    width: 30%;
     padding: 10px;
     color: #fff;
     background-color: #4285f4;
     border: none;
+    margin-top: 20px;
     border-radius: 5px;
     cursor: pointer;
+    margin-right: 50px;
     transition: background-color 0.3s ease;
 }
 
@@ -76,7 +63,7 @@ button:hover {
 a {
     text-decoration: none;
     color: #4285f4;
-    margin-top: 10px;
+    margin-left: 200px;
     font-size: 14px;
 }
 
@@ -136,10 +123,22 @@ a:hover {
     z-index: 1;
 }
 
-#login {
-    left: 0;
-}
+
 
 #register {
     left: 100px;
+}
+#save-login {
+    margin-left: 150px;
+}
+.inputfield{
+    margin-right:10px;
+    margin-top: 30px;
+}
+.input-field{
+    margin-right:40px;
+
+}
+h2{
+    margin-top: -10px;
 }

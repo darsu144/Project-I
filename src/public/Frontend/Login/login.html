@@ -9,29 +9,26 @@
 </head>
 
 <body>
-    <div class="form-container sign-in">
+    <div class="form-container">
         <form id="loginForm" action="http://localhost:5000/login" method="post">
-            <h2>Login-form</h2>
+            <h2>Login</h2>
             <div class="input-field">
-                <input type="text" name="email" required />
                 <label>Enter email </label>
+                <input type="text" name="email" required />
+        
             </div>
-            <div class="input-field">
-                <input type="password" name="password" required />
+            <div class="inputfield">
                 <label> Enter Password</label>
+                <input type="password" name="password" required />
+               
             </div>
             <div class="Forget">
-                <label for="save-login">
-                    <input type="checkbox" id="save-login" />
-                    <p>save login information</p>
-                </label>
+            
                 <a href="#">Forget password</a>
             </div>
             <button type="submit">log in</button>
         </form>
-        <div class="Create account">
-            <p>don't have an account?<a href="#"> create account</a></p>
-        </div>
+        
     </div>
 
     <script>
