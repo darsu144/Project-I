@@ -5,10 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Registration</title>
     <link rel="stylesheet" href="register.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
    
-    <form id="registerForm">
+    <div class="wrapper">
+
+        <span class="bg-animate"></span>
+        <span class="bg-animate2"></span>
+
+        <div class="form-box register">
+            <h2>Sign Up</h2>
+            <form id="registerForm">
+                <div class="input-box">
+                    <input type="text" id="username" name="username" required>
+                    <label for="username"> Username</label>
+                    <i class='bx bxs-user'></i>
+                </div>
+
+                <div class="input-box">
+                    <input type="email" id="email" name="email" required>
+                    <label for="emial"> Email Id</label>
+                    <i class='bx bxs-envelope'></i>
+                </div>
+
+                <div class="input-box">
+                    <input type="password" id="password" name="password" required>
+                    <label for="password">Password</label>
+                    <i class='bx bxs-lock-alt'></i>
+                </div>
+
+                <button  type="submit" class="btn">Sign Up</button>
+
+                <div class="logreg-link">
+                    <p>Already have an account <a href="../Login/login.html" class="login-link">Login</a></p>
+                </div>
+            </form>
+        </div>
+
+        <div class="info-text register">
+            <h2>Welcome Back!</h2>
+            <p>E-WASTAGE</p>
+        </div>
+
+
+
+    </div>
+
+
+
+    <!-- <form id="registerForm">
         <h2 >User Registration</h2>
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required>
@@ -20,13 +66,13 @@
         <input type="password" id="password" name="password" required>
         
         <button type="submit">Register</button>
-    </form>
+    </form> -->
 
     <script>
         document.getElementById('registerForm').addEventListener('submit', async function (event) {
             event.preventDefault();
 
-            const name = document.getElementById('name').value;
+            const name = document.getElementById('username').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
